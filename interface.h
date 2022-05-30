@@ -127,7 +127,7 @@ int xmit_msg_del(void *msg);
 void *xmit_stream_new(void *core, uint16_t type,
                       int mode, int priority, int lifetime_ms);
 
-//  create a msg from a stream, the stream have to be bound to a server or client before creating any msg
+//  create a msg from a stream, the stream has to be bound to a server or client before creating any msg
 //  return: the msg
 void *xmit_stream_msg(void *stream);
 
