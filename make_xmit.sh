@@ -1,8 +1,16 @@
 #!/bin/bash -e
 
-cp ~/xmit/version ./
 cp ~/xmit/lib/libxmit.a ./
 cp ~/xmit/src/protocol/api/interface.h ./
+cp ~/xmit/src/protocol/pbgo/* ./
+go build
 
-cp ~/xmit/demo/loopback-client ./client
-cp ~/xmit/demo/loopback-server ./server
+cd demo/server/
+rm -f server
+go build
+cd ../..
+
+cd demo/client/
+rm -f client
+go build
+cd ../..
