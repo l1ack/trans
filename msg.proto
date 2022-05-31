@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package xmit.analysis;
+
+message Msg {
+  uint64 sequence = 1;
+  string payload = 2;
+}
