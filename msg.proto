@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package xmit.analysis;
 
+option go_package = "example.com/project/protos/fizz";
+
 message Msg {
   uint64 sequence = 1;
   string payload = 2;
