@@ -1,42 +1,93 @@
-package main
+package xmit
 
 import (
-	"strconv"
-	"strings"
+	"fmt"
+	"math/rand"
+	"time"
+	"unsafe"
 
-	"e.coding.net/xverse-git/xmedia/xrtc/xvrtc/xmit"
+	"github.com/pion/randutil"
 )
 
-var (
-	address = "175.178.27.150"
-	demo    xmit.DemoClient
+type (
+	DemoClient struct {
+		connId        []byte
+		client        *Client
+		callbacks     *ClientCallbacks
+		serverAddress uint32
+		dataStream    *ClientStream
+		ctrlStream    *ClientStream
+	}
 )
 
-func IPV4ToUint(ip string) uint32 {
-	ip = strings.TrimSpace(ip)
-	bits := strings.Split(ip, ".")
-	if len(bits) != 4 {
-		return 0
+func (demo *DemoClient) recvHandler(msgType uint16, data []byte) {
+	switch msgType {
+	case 1:
+		demo.ctrlStream.Send(data)
+		Stop()
+		fmt.Println("Close Connection")
+	case 2:
+		seq := *(*uint64)(unsafe.Pointer(&data[0]))
+		fmt.Println("Msg: (", seq, ", TYPE: ", msgType, ", SIZE: ", len(data), ") Echoed")
 	}
-
-	b0, _ := strconv.Atoi(bits[0])
-	b1, _ := strconv.Atoi(bits[1])
-	b2, _ := strconv.Atoi(bits[2])
-	b3, _ := strconv.Atoi(bits[3])
-	if b0 > 255 || b1 > 255 || b2 > 255 || b3 > 255 {
-		return 0
-	}
-
-	var sum uint32
-
-	sum += uint32(b0) << 24
-	sum += uint32(b1) << 16
-	sum += uint32(b2) << 8
-	sum += uint32(b3)
-
-	return sum
 }
 
-func main() {
-	demo.Start(IPV4ToUint(address))
+func (demo *DemoClient) connectedHandler() {
+	fmt.Println("Connected!")
+}
+
+func (demo *DemoClient) Start(serverAddress uint32) {
+	rand.Seed(time.Now().UTC().UnixNano())
+	demo.serverAddress = serverAddress
+	demo.client, _ = GetClient(Transport_kWdc)
+	demo.callbacks = &ClientCallbacks{
+		OnMessage:   demo.recvHandler,
+		OnConnected: demo.connectedHandler,
+	}
+
+	Start()
+
+	signalServerAddress = serverAddress
+	offer, err := demo.client.Offer(demo.callbacks)
+	if err == nil {
+		fmt.Println("OFFER:", string(offer))
+	} else {
+		fmt.Println("OFFER ERR:", err)
+		return
+	}
+
+	getSignal().sendOffer(offer)
+	answer := getSignal().recvAnswer()
+	err = demo.client.Answer(answer)
+	if err != nil {
+		fmt.Println("ANSWER ERR:", err)
+		return
+	}
+
+	demo.ctrlStream, _ = demo.client.NewStream(1, 3, 1, 0)
+	demo.dataStream, _ = demo.client.NewStream(2, 3, 1, 0)
+
+	seq := uint64(0)
+	for range time.NewTicker(2 * time.Second).C {
+		message := RandSeq(rand.Intn(11111))
+
+		// Send the message as text
+		data := []byte(message)
+		*(*uint64)(unsafe.Pointer(&data[0])) = seq
+		seq++
+		if err = demo.dataStream.Send(data); err != nil {
+			fmt.Println("SEND ERR:", err)
+		}
+	}
+
+	Join()
+}
+
+func RandSeq(n int) string {
+	val, err := randutil.GenerateCryptoRandomString(n, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	if err != nil {
+		fmt.Println("RAND ERR:", err)
+	}
+
+	return val
 }
