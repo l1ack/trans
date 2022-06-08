@@ -2,14 +2,13 @@ package xmit
 
 import "C"
 import (
+	"fmt"
 	"unsafe"
-
-	"e.coding.net/xverse-git/public/go_common/logger"
 )
 
 //export goOnLog
 func goOnLog(log *C.char) {
-	logger.Infof("%s", log)
+	fmt.Printf("Xmit LOG: %s", log)
 }
 
 //export goServerOnMessage
