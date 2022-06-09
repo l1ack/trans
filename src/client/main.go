@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"e.coding.net/xverse-git/xmedia/xmit-analysis/xmit"
+	xmit "e.coding.net/xverse-git/xmedia/xmit-lib/go"
 )
 
 var (
