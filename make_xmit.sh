@@ -1,8 +1,10 @@
 #!/bin/bash -e
 
 cd src/client
+go mod tidy
 go build
 cd ../server
+go mod tidy
 go build
 cd ../..
 
