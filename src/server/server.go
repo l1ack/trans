@@ -7,16 +7,17 @@ import (
 	"unsafe"
 
 	"github.com/google/uuid"
-	"e.coding.net/xverse-git/xmedia/xmit-analysis/xmit"
+
+	xmit "e.coding.net/xverse-git/xmedia/xmit-lib/go"
 )
 
 type (
 	DemoServer struct {
-		server        *Server
-		callbacks     *ServerCallbacks
+		server        *xmit.Server
+		callbacks     *xmit.ServerCallbacks
 		serverAddress uint32
-		dataStream    *ServerStream
-		ctrlStream    *ServerStream
+		dataStream    *xmit.ServerStream
+		ctrlStream    *xmit.ServerStream
 	}
 )
 
@@ -57,25 +58,22 @@ func (demo *DemoServer) Start(serverAddress uint32) {
 	go http.ListenAndServe(":51913", nil)
 
 	demo.serverAddress = serverAddress
-	demo.server, _ = GetServer(serverAddress, 0, 0)
-	if demo.server.rawServer == nil {
-		fmt.Println("fail to Init Xmit Server")
-	}
-	demo.callbacks = &ServerCallbacks{
+	demo.server, _ = xmit.GetServer(serverAddress, 0, 0)
+	demo.callbacks = &xmit.ServerCallbacks{
 		OnMessage:   demo.echoHandler,
 		OnConnected: demo.connectedHandler,
 	}
 
-	Start()
+	xmit.Start()
 
-	signalServerAddress = serverAddress
+	xmit.SignalServerAddress = serverAddress
 	go func(demo *DemoServer) {
 		for {
-			getSignal().sendAnswer(demo.Accept(getSignal().recvOffer()))
+			xmit.GetSignal().SendAnswer(demo.Accept(xmit.GetSignal().RecvOffer()))
 		}
 	}(demo)
 
-	Join()
+	xmit.Join()
 }
 
 func (demo *DemoServer) Accept(offer []byte) (answer []byte) {
@@ -86,7 +84,7 @@ func (demo *DemoServer) Accept(offer []byte) (answer []byte) {
 	if err != nil {
 		fmt.Println("ERROR: ", err)
 	}
-	demo.ctrlStream, _ = demo.server.NewStream(connId, 1, Mode_kSemiReliableOrdered, Priority_kNormal, 0)
-	demo.dataStream, _ = demo.server.NewStream(connId, 2, Mode_kSemiReliableOrdered, Priority_kNormal, 0)
+	demo.ctrlStream, _ = demo.server.NewStream(connId, 1, xmit.Mode_kSemiReliableOrdered, xmit.Priority_kNormal, 0)
+	demo.dataStream, _ = demo.server.NewStream(connId, 2, xmit.Mode_kSemiReliableOrdered, xmit.Priority_kNormal, 0)
 	return answer
 }

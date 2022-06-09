@@ -3,13 +3,11 @@ package main
 import (
 	"strconv"
 	"strings"
-
-	xmit "e.coding.net/xverse-git/xmedia/xmit-lib/go"
 )
 
 var (
 	address = "175.178.27.150"
-	demo    xmit.DemoClient
+	demo    DemoClient
 )
 
 func IPV4ToUint(ip string) uint32 {

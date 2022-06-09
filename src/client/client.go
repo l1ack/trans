@@ -6,17 +6,19 @@ import (
 	"time"
 	"unsafe"
 
-	//"e.coding.net/xverse-git/xmedia/xmit-lib"
+	"github.com/pion/randutil"
+
+	xmit "e.coding.net/xverse-git/xmedia/xmit-lib/go"
 )
 
 type (
 	DemoClient struct {
 		connId        []byte
-		client        *Client
-		callbacks     *ClientCallbacks
+		client        *xmit.Client
+		callbacks     *xmit.ClientCallbacks
 		serverAddress uint32
-		dataStream    *ClientStream
-		ctrlStream    *ClientStream
+		dataStream    *xmit.ClientStream
+		ctrlStream    *xmit.ClientStream
 	}
 )
 
@@ -24,7 +26,7 @@ func (demo *DemoClient) recvHandler(msgType uint16, data []byte) {
 	switch msgType {
 	case 1:
 		demo.ctrlStream.Send(data)
-		Stop()
+		xmit.Stop()
 		fmt.Println("Close Connection")
 	case 2:
 		seq := *(*uint64)(unsafe.Pointer(&data[0]))
@@ -39,15 +41,15 @@ func (demo *DemoClient) connectedHandler() {
 func (demo *DemoClient) Start(serverAddress uint32) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	demo.serverAddress = serverAddress
-	demo.client, _ = GetClient(Transport_kWdc)
-	demo.callbacks = &ClientCallbacks{
+	demo.client, _ = xmit.GetClient(xmit.Transport_kWdc)
+	demo.callbacks = &xmit.ClientCallbacks{
 		OnMessage:   demo.recvHandler,
 		OnConnected: demo.connectedHandler,
 	}
 
-	Start()
+	xmit.Start()
 
-	signalServerAddress = serverAddress
+	xmit.SignalServerAddress = serverAddress
 	offer, err := demo.client.Offer(demo.callbacks)
 	if err == nil {
 		fmt.Println("OFFER:", string(offer))
@@ -56,8 +58,8 @@ func (demo *DemoClient) Start(serverAddress uint32) {
 		return
 	}
 
-	getSignal().sendOffer(offer)
-	answer := getSignal().recvAnswer()
+	xmit.GetSignal().SendOffer(offer)
+	answer := xmit.GetSignal().RecvAnswer()
 	err = demo.client.Answer(answer)
 	if err != nil {
 		fmt.Println("ANSWER ERR:", err)
@@ -80,7 +82,7 @@ func (demo *DemoClient) Start(serverAddress uint32) {
 		}
 	}
 
-	Join()
+	xmit.Join()
 }
 
 func RandSeq(n int) string {
