@@ -1,10 +1,10 @@
 module client
 
-go 1.13
+go 1.18
 
 replace e.coding.net/xverse-git/xmedia/xmit-lib => ../../../xmit-lib
 
 require (
-	e.coding.net/xverse-git/xmedia/xmit-lib v0.1.2
-	github.com/pion/randutil v0.1.0
+  e.coding.net/xverse-git/xmedia/xmit-lib v0.1.2
+  github.com/pion/randutil v0.1.0
 )
