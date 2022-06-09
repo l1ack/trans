@@ -41,7 +41,7 @@ func (demo *DemoClient) connectedHandler() {
 func (demo *DemoClient) Start(serverAddress uint32) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	demo.serverAddress = serverAddress
-	demo.client, _ = xmit.GetClient(xmit.Transport_kWdc)
+	demo.client, _ = xmit.GetClient(xmit.Transport_kUdp)
 	demo.callbacks = &xmit.ClientCallbacks{
 		OnMessage:   demo.recvHandler,
 		OnConnected: demo.connectedHandler,
