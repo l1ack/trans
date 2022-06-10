@@ -1,0 +1,64 @@
+{
+    "cases": [
+        {
+            "case_id": 1,
+            "timeline": 3000000,
+            "users": [
+                {
+                    "userid": 1,
+                    "userip": "127.0.0.1",
+                    "interval_seq_pattern": "custom",
+                    "min_interval": -1,
+                    "max_interval": -1,
+                    "custom_interval_seq": [100,200],
+                    "protocol": "webRTC",
+                    "size_seq_pattern": "custom",
+                    "min_size": -1,
+                    "max_size": -1,
+                    "custom_size_seq": [500,600]
+                },
+                {
+                    "userid": 2,
+                    "userip": "127.0.0.1",
+                    "interval_seq_pattern": "random",
+                    "min_interval": 50,
+                    "max_interval": 200,
+                    "custom_interval_seq": [],
+                    "protocol": "webRTC",
+                    "size_seq_pattern": "random",
+                    "min_size": 20,
+                    "max_size": 2000,
+                    "custom_size_seq": []
+                },
+                {
+                    "userid": 3,
+                    "userip": "127.0.0.1",
+                    "interval_seq_pattern": "random",
+                    "min_interval": 50,
+                    "max_interval": 200,
+                    "custom_interval_seq": [],
+                    "protocol": "webRTC",
+                    "size_seq_pattern": "custom",
+                    "min_size": -1,
+                    "max_size": -1,
+                    "custom_size_seq": [500,600,800,900]
+                },
+                {
+                    "userid": 4,
+                    "userip": "127.0.0.1",
+                    "interval_seq_pattern": "custom",
+                    "min_interval": -1,
+                    "max_interval": -1,
+                    "custom_interval_seq": [100,200],
+                    "protocol": "webRTC",
+                    "size_seq_pattern": "random",
+                    "min_size": 500,
+                    "max_size": 700,
+                    "custom_size_seq": [500,600]
+                }
+
+            ]
+            
+        }
+    ]
+}
