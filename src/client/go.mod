@@ -6,6 +6,7 @@ replace e.coding.net/xverse-git/xmedia/xmit-lib => ../../../xmit-lib
 
 require (
 	e.coding.net/xverse-git/xmedia/xmit-lib v0.1.2
+	github.com/pebbe/zmq4 v1.2.9
 	github.com/pion/randutil v0.1.0
 )
 

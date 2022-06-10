@@ -47,6 +47,8 @@ func (demo *DemoClient) Start(serverAddress uint32) {
 		OnConnected: demo.connectedHandler,
 	}
 
+	//, interval int32, seq_size int
+
 	xmit.Start()
 
 	xmit.SignalServerAddress = serverAddress
@@ -70,7 +72,7 @@ func (demo *DemoClient) Start(serverAddress uint32) {
 	demo.dataStream, _ = demo.client.NewStream(2, 3, 1, 0)
 
 	seq := uint64(0)
-	for range time.NewTicker(2 * time.Second).C {
+	for range time.NewTicker(3 * time.Second).C {
 		message := RandSeq(rand.Intn(11111))
 
 		// Send the message as text

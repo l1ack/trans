@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	address = "127.0.0.1"
+	address = "42.194.250.246"
 	demo    DemoServer
 )
 

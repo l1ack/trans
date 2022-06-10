@@ -3,6 +3,11 @@ package main
 import (
 	"strconv"
 	"strings"
+
+	zmq "github.com/pebbe/zmq4"
+
+	"fmt"
+	"os"
 )
 
 var (
@@ -36,5 +41,25 @@ func IPV4ToUint(ip string) uint32 {
 }
 
 func main() {
-	demo.Start(IPV4ToUint(address))
+	if len(os.Args) < 2 {
+		fmt.Printf("I: syntax: %s <endpoint>\n", os.Args[0])
+		return
+	}
+	server, _ := zmq.NewSocket(zmq.REP)
+	server.Bind(os.Args[1])
+        msg, err := server.RecvMessage(0)
+	if err != nil {
+	}
+	fmt.Println("%s", msg)
+        
+	fmt.Println("I: echo service is ready at", os.Args[1])
+//	for {
+//		msg, err := server.RecvMessage(0)
+//		if err != nil {
+//			break //  Interrupted
+//		}
+//		server.SendMessage(msg)
+//	}
+	// fmt.Println("W: interrupted")
+	demo.Start(IPV4ToUint(msg[0]))
 }
